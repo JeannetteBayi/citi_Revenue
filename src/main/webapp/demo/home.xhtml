@@ -1,0 +1,550 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/template.xhtml">
+
+            <ui:define name="title">
+                Home
+            </ui:define>
+
+            <ui:define name="body">
+                <h:form prependId="false" id="mform">
+                    <p:toolbar id="tb">
+                        <f:facet name="left">
+                            <p:commandButton id="merchantbtn" value="Merchants" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showMerchants}" update="@form" />
+                            <p:commandButton  id="taxRegisterbtn" value="Tax Register" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showTaxDevice}" update="@form" />
+                            <p:commandButton id="findTaxRegisterbtn" value="Find Tax Register" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showFindTaxDevice}" update="@form" />
+                            <p:commandButton id="Transactionsbtn" value="Transactions" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showTransactions}" update="@form" />
+                            <p:commandButton id="merchantTrans" value="Merchant Transactions" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showMerchantTransactions}" update="@form" />
+                            <p:commandButton value="Merchant Profile" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showMerchantProfile}" update="@form" />
+                            <p:commandButton value="Users" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showUsers}" update="@form" />
+                            <p:commandButton value="My Account" icon="ui-icon-folder-open" actionListener="#{homeManagedBean.showMyAccount}" update="@form"/>
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton title="Quit" icon="ui-icon-closethick" actionListener="#{homeManagedBean.logout()}" update="@form"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayMerchants}">
+                        <h1 class="view-title">Merchants</h1> 
+                        <p:panelGrid id="panelMerchant"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Name"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="txtMerchantName" value="#{homeManagedBean.merchantName}" title="Merchant Name"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="PIN"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="txtMerchantPIN" value="#{homeManagedBean.merchantPIN}" title="Merchant PIN" disabled="#{homeManagedBean.merchantSelected != null}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="VAT"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="txtMerchantVAT" value="#{homeManagedBean.merchantVAT}" title="Merchant VAT" disabled="#{homeManagedBean.merchantSelected != null}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Location"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText  id="txtMerchantLocation" value="#{homeManagedBean.merchantLocation}" title="Merchant Location"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Phone Number"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText  id="txtMerchantPhone" value="#{homeManagedBean.merchantPhone}" title="Merchant phone number" converterMessage="Invalid data type"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Email Address"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText  id="txtMerchantEmailAddress" value="#{homeManagedBean.merchantEmail}" title="Merchant Email Address"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Category"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText  id="txtMerchantCategory" value="#{homeManagedBean.merchantCategory}" title="Merchant Category" converterMessage="Invalid data type"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:commandButton  id="btnMerchantCreateNew" value="Create New" actionListener="#{homeManagedBean.clearMerchant}" update="@form:panelMerchant, @form:merchantTable"/>
+                                    <p:commandButton  id="btnMerchantSave" value="Save" actionListener="#{homeManagedBean.save_edit_Merchant}" update="@form:panelMerchant, @form:merchantTable" rendered="#{homeManagedBean.merchantSelected == null}"/>
+                                    <p:commandButton  id="btntMerchantEdit" value="Edit" actionListener="#{homeManagedBean.save_edit_Merchant}" update="@form:panelMerchant, @form:merchantTable" rendered="#{homeManagedBean.merchantSelected != null}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:dataTable id="merchantTable" value="#{homeManagedBean.merchants}" var="merchant" selectionMode="single" selection="#{homeManagedBean.merchantSelected}" rowKey="#{merchant.id}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                            <p:ajax event="rowSelect" listener="#{homeManagedBean.onMerchantSelect}" update="@form:panelMerchant" />
+                            <p:column headerText="Id">#{merchant.id}</p:column>
+                            <p:column headerText="Name">#{merchant.name}</p:column>
+                            <p:column headerText="PIN">#{merchant.pin}</p:column>
+                            <p:column headerText="VAT">#{merchant.vat}</p:column>
+                            <p:column headerText="Location">#{merchant.location}</p:column>
+                            <p:column headerText="Category">#{merchant.categorytype}</p:column>
+                            <p:column headerText="Phone Number">#{merchant.phonenumber}</p:column>
+                            <p:column headerText="Date Created">#{merchant.datecreated}</p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayTaxDevices}">
+                        <h1 class="view-title">Tax Register</h1> 
+                        <p:panelGrid id="trPanel"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Merchant PIN"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="trMerchantPIN" value="#{homeManagedBean.trMerchantPIN}" title="Merchant PIN"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Device Type"/>
+                                </p:column>
+                                <p:column>
+                                    <p:selectOneMenu  value="#{homeManagedBean.trType}" title="Device Type either ETR or ESD" style="width: 134px;">
+                                        <f:selectItem itemLabel="ESD"       itemValue="ESD" />
+                                        <f:selectItem itemLabel="ETR"       itemValue="ETR" />
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Serial"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.trDeviceId}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:commandButton value="Create New" actionListener="#{homeManagedBean.clearTaxregister}" update="@form:trPanel, @form:trTable"/>
+                                    <p:commandButton  id = "btnTaxRegisterSave" value="Save" actionListener="#{homeManagedBean.save_edit_Taxregister}" update="@form:trPanel, @form:trTable" rendered="#{homeManagedBean.taxregisterSelected == null}"/>
+                                    <p:commandButton value="Edit" actionListener="#{homeManagedBean.save_edit_Taxregister}" update="@form:trPanel, @form:trTable" rendered="#{homeManagedBean.taxregisterSelected != null}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="trmessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:dataTable id="trTable" value="#{homeManagedBean.taxregisters}" var="tr" selectionMode="single" selection="#{homeManagedBean.taxregisterSelected}" rowKey="#{tr.id}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                            <p:ajax event="rowSelect" listener="#{homeManagedBean.onTaxregisterSelect}" update="@form:trPanel" />
+                            <p:column headerText="Serial">#{tr.deviceid}</p:column>
+                            <p:column headerText="Merchant PIN">#{tr.merchantpin}</p:column>
+                            <p:column headerText="Type">#{tr.devicetype}</p:column>
+                            <p:column headerText="Date Issued">#{tr.dateissued}</p:column>
+                            <p:column headerText="Status">#{tr.statusMessage}</p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayFindTaxDevices}">
+                        <h1 class="view-title">Find Tax Register</h1> 
+                        <p:panelGrid id="findtrPanel"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Serial"/>
+                                </p:column>
+                                <p:column>
+                                    <p:inputText id="taxregDeviceId" value="#{homeManagedBean.trDeviceId}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Merchant PIN"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.trMerchantPIN}" title="Merchant PIN"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Device Type"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel  value="#{homeManagedBean.trType}" title="Device Type either ETR or ESD"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Date Issued"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel  value="#{homeManagedBean.trDateCreated}" title="Device date issued"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Status"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel  value="#{homeManagedBean.trStatus}" title="Device Status"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">
+                                    <p:commandButton  id="Searchtr" value="Search" actionListener="#{homeManagedBean.findTaxregister}" update="@form:findtrPanel"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="findtrmessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayTransactions}">
+                        <h1 class="view-title">Transactions</h1> 
+                        <p:panelGrid id="transactionsPanel"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Summary"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="Merchants"/>
+                                </p:column>
+                                <p:column style="width: 75px;text-align:  right;">
+                                    <h:outputLabel value="#{homeManagedBean.taxSummary.merchants}"/>
+                                </p:column>
+                                <p:column style="width: 40px;text-align:  right;">
+                                    <h:outputLabel value="Tax1"/>
+                                </p:column>
+                                <p:column style="width: 75px;text-align:  right;">
+                                    <h:outputLabel value="#{homeManagedBean.taxSummary.tax1}"/>
+                                </p:column>
+                                <p:column style="width: 40px;text-align:  right;">
+                                    <h:outputLabel value="Tax2"/>
+                                </p:column>
+                                <p:column style="width: 75px;text-align:  right;">
+                                    <h:outputLabel value="#{homeManagedBean.taxSummary.tax2}"/>
+                                </p:column>
+                                <p:column style="text-align:  right;">
+                                    <h:outputLabel value="Tax3"/>
+                                </p:column>
+                                <p:column style="width: 75px;text-align:  right;">
+                                    <h:outputLabel value="#{homeManagedBean.taxSummary.tax3}"/>
+                                </p:column>
+                                <p:column style="text-align:  right;">
+                                    <h:outputLabel value="Tax4"/>
+                                </p:column>
+                                <p:column style="width: 75px;text-align:  right;">
+                                    <h:outputLabel value="#{homeManagedBean.taxSummary.tax4}"/>
+                                </p:column>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <h:outputLabel value="Filter by Merchant Pin"/>
+                                    </p:column>
+                                    <p:column colspan="4">
+                                        <p:selectOneMenu  value="#{homeManagedBean.filerMerchantPin}" editable="true">
+                                            <f:selectItem itemLabel="Select Merchant" itemValue="" />
+                                            <f:selectItems value="#{homeManagedBean.merchantPins}" />
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="Start Date"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:calendar value="#{homeManagedBean.startDate}" pattern="dd/MM/yyyy" inputStyle="width:70px;"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="Stop Date"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:calendar value="#{homeManagedBean.stopDate}" pattern="dd/MM/yyyy" inputStyle="width:70px;"/>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandButton  id="searchtransaction" value="Search" actionListener="#{homeManagedBean.searchTransactionRange}" update="@form:transactionsPanel, @form:transmessages, @form:transactionsTable"/>
+                                    </p:column>
+                                </p:row>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="transmessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:dataTable id="transactionsTable" value="#{homeManagedBean.transactions}" var="trans" rowKey="#{trans.id}" selectionMode="single" selection="#{homeManagedBean.selectedTransaction}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                            <p:ajax event="rowSelect" update="@form:transEditor" oncomplete="PF('dlg').show();"/>
+                            <p:column headerText="Merchant PIN">#{trans.merchantpin}</p:column>
+                            <p:column headerText="Client PIN">#{trans.clientpin}</p:column>
+                            <p:column headerText="Timestamp">#{trans.timestamp}</p:column>
+                            <p:column headerText="Tax Register">#{trans.deviceserial}</p:column>
+                            <p:column headerText="Receipt Number">#{trans.receiptnumber}</p:column>
+                            <p:column headerText="Amount 1">#{trans.amount1}</p:column>
+                            <p:column headerText="Amount 2">#{trans.amount2}</p:column>
+                            <p:column headerText="Amount 3">#{trans.amount3}</p:column>
+                            <p:column headerText="Amount 4">#{trans.amount4}</p:column>
+                            <p:column headerText="Tax 1">#{trans.tax1}</p:column>
+                            <p:column headerText="Tax 2">#{trans.tax2}</p:column>
+                            <p:column headerText="Tax 3">#{trans.tax3}</p:column>
+                            <p:column headerText="Tax 4">#{trans.tax4}</p:column>
+                        </p:dataTable>
+                        <p:dialog  id="dlgId" header="Receipt Info" widgetVar="dlg" height="260" width="900" showHeader="true" draggable="false">
+                            <p:editor id="transEditor" value="#{homeManagedBean.transactionReceiptInfo}" controls="" disabled="true"/>
+                        </p:dialog>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" style="width: 1170px;" rendered="#{homeManagedBean.displayMerchantTransactions}">
+                        <h1 class="view-title">Merchant Transactions</h1>
+                        <p:panelGrid id="merchantPanel"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Start Date"/>
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{homeManagedBean.startDate}" pattern="dd/MM/yyyy" inputStyle="width:70px;"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="Stop Date"/>
+                                </p:column>
+                                <p:column>
+                                    <p:calendar value="#{homeManagedBean.stopDate}" pattern="dd/MM/yyyy" inputStyle="width:70px;"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandButton value="Search" actionListener="#{homeManagedBean.searchMerchantTransaction}" update="@form:merchantPanel, @form:merchanttransmessages, @form:merchantAccordion"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="merchanttransmessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:accordionPanel id="merchantAccordion">
+                            <p:tab title="Sales" id="salesTab">
+                                <p:dataTable id="merchantSalesTable" value="#{homeManagedBean.merchantSales}" var="mstrans" rowKey="#{mstrans.id}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                                    <p:column headerText="Merchant PIN">#{mstrans.merchantpin}</p:column>
+                                    <p:column headerText="Client PIN">#{mstrans.clientpin}</p:column>
+                                    <p:column headerText="Timestamp">#{mstrans.timestamp}</p:column>
+                                    <p:column headerText="Tax Register">#{mstrans.deviceserial}</p:column>
+                                    <p:column headerText="Receipt Number">#{mstrans.receiptnumber}</p:column>
+                                    <p:column headerText="Amount 1">#{mstrans.amount1}</p:column>
+                                    <p:column headerText="Amount 2">#{mstrans.amount2}</p:column>
+                                    <p:column headerText="Amount 3">#{mstrans.amount3}</p:column>
+                                    <p:column headerText="Amount 4">#{mstrans.amount4}</p:column>
+                                    <p:column headerText="Tax 1">#{mstrans.tax1}</p:column>
+                                    <p:column headerText="Tax 2">#{mstrans.tax2}</p:column>
+                                    <p:column headerText="Tax 3">#{mstrans.tax3}</p:column>
+                                    <p:column headerText="Tax 4">#{mstrans.tax4}</p:column>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Purchases" id="Purchases">
+                                <p:dataTable id="merchantPurchaseTable" value="#{homeManagedBean.merchantPurchases}" var="mptrans" rowKey="#{mptrans.id}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                                    <p:column headerText="Merchant PIN">#{mptrans.merchantpin}</p:column>
+                                    <p:column headerText="Client PIN">#{mptrans.clientpin}</p:column>
+                                    <p:column headerText="Timestamp">#{mptrans.timestamp}</p:column>
+                                    <p:column headerText="Tax Register">#{mptrans.deviceserial}</p:column>
+                                    <p:column headerText="Receipt Number">#{mptrans.receiptnumber}</p:column>
+                                    <p:column headerText="Amount 1">#{mptrans.amount1}</p:column>
+                                    <p:column headerText="Amount 2">#{mptrans.amount2}</p:column>
+                                    <p:column headerText="Amount 3">#{mptrans.amount3}</p:column>
+                                    <p:column headerText="Amount 4">#{mptrans.amount4}</p:column>
+                                    <p:column headerText="Tax 1">#{mptrans.tax1}</p:column>
+                                    <p:column headerText="Tax 2">#{mptrans.tax2}</p:column>
+                                    <p:column headerText="Tax 3">#{mptrans.tax3}</p:column>
+                                    <p:column headerText="Tax 4">#{mptrans.tax4}</p:column>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Suppliers">
+                                <p:dataTable id="merchantSuppliersTable" value="#{homeManagedBean.suppliers}" var="sup" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                                    <p:column headerText="Merchant Name">#{sup.name}</p:column>
+                                    <p:column headerText="Type">#{sup.type}</p:column>
+                                    <p:column headerText="Description">#{sup.description}</p:column>
+                                </p:dataTable>
+                            </p:tab>
+                            <p:tab title="Summary">
+                                <p:panelGrid id="merchantPanel"  style="margin: 0 auto;">
+                                    <f:facet name="header">
+                                        <p:row>
+                                            <p:column colspan="6">Summary Details</p:column>
+                                        </p:row>
+                                    </f:facet>
+                                    <p:row>
+                                        <p:column><h:outputLabel value="VAT PAID"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.vatPaid}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Amount1"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryAmount1()}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Tax1"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryTax1()}"/></p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column><h:outputLabel value="VAT DUE"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.vatSale}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Amount2"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryAmount2()}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Tax2"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryTax2()}"/></p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column><h:outputLabel value="Total Purchases"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.totalPurchases}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Amount3"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryAmount3()}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Tax3"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryTax3()}"/></p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column><h:outputLabel value="Total Sales"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.totalSales}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Amount4"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryAmount4()}"/></p:column>
+                                        <p:column style="width: 70px;"><h:outputLabel value="Tax4"/></p:column>
+                                        <p:column style="text-align: right;width: 70px;"><h:outputLabel value="#{homeManagedBean.summaryTax4()}"/></p:column>
+                                    </p:row>
+                                </p:panelGrid>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayMerchantProfile}">
+                        <h1 class="view-title">Merchant Profile</h1> 
+                        <p:panelGrid id="profilePanel"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Name"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.name}" title="Merchant Name"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="PIN"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.pin}" title="Merchant PIN"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="VAT"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="#{homeManagedBean.merchantProfile.vat}" title="Merchant VAT"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Location"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.location}" title="Merchant Location"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Phone Number"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.phonenumber}" title="Merchant phone number"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Category"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.categorytype}" title="Merchant Category"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Category Description"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.categoryname}" title="Merchant Category Description"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Date Created"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.merchantProfile.datecreated}"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="profilemessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:dataTable id="merchantProfileTable" value="#{homeManagedBean.merchantTaxregisters}" var="mptr" rowKey="#{mptr.id}" tableStyle="margin: 0 auto;width:auto;" resizableColumns="true" style="margin-top: 3px;" >
+                            <f:facet name="header">
+                                Tax Registers
+                            </f:facet>
+                            <p:column headerText="Serial">#{mptr.deviceid}</p:column>
+                            <p:column headerText="Merchant PIN">#{mptr.merchantpin}</p:column>
+                            <p:column headerText="Type">#{mptr.devicetype}</p:column>
+                            <p:column headerText="Date Issued">#{mptr.dateissued}</p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayMyAccount}">
+                        <h1 class="view-title">My Account</h1> 
+                        <p:panelGrid id="panelMyAccount"  style="margin: 0 auto;">
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Username"/>
+                                </p:column>
+                                <p:column>
+                                    <h:outputLabel value="#{homeManagedBean.username}"/>
+                                </p:column>
+                                <p:column rowspan = "3" style="vertical-align: top;width:150px;" >
+                                    <h:outputText value="Roles"/>
+                                    <hr/>
+                                    <ui:repeat value="#{homeManagedBean.roles}" var="role">
+                                        <h:outputLabel value="#{role}"/><br/>
+                                    </ui:repeat>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Previous Password"/>
+                                </p:column>
+                                <p:column>
+                                    <p:password value="#{homeManagedBean.prevpassword}"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="New Password"/>
+                                </p:column>
+                                <p:column>
+                                    <p:password value="#{homeManagedBean.password}" feedback="true"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:commandButton value="Change Password" actionListener="#{homeManagedBean.changePassword}" update="@form:panelMyAccount"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                        <p:messages id="messagesMyAccount" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                    </h:panelGroup>
+                    <h:panelGroup layout="block" class="container forgecontainer" rendered="#{homeManagedBean.displayUsers}">
+                        <h1 class="view-title">Users</h1>
+                        <p:dialog  id="dlgUsers" header="Email Address" widgetVar="dlgUsers" showHeader="true" draggable="false">
+                            <p:inputText id="userEmail" value="#{homeManagedBean.selectedUser.email}" style="margin-right: 5px;"/>
+                            <p:commandButton value="Reset Password" action="#{homeManagedBean.resetPassword}" update="@form:usersTable" oncomplete="PF('dlgUsers').hide();"/>
+                        </p:dialog>
+                        <p:messages id="usersemessages" showDetail="true" autoUpdate="true" closable="true" escape="false" style="white-space: pre-wrap"/>
+                        <p:dataTable id="usersTable" value="#{homeManagedBean.users}" var="user" rowKey="#{user.id}" tableStyle="margin: 0 auto;width:auto;" selection="#{homeManagedBean.selectedUser}" selectionMode="single" resizableColumns="true" style="margin-top: 3px;" >
+                            <p:ajax event="rowSelect" update="@form:usersTable, @form:dlgUsers"/>
+                            <p:column headerText="Username">#{user.username}</p:column>
+                            <p:column headerText="Email Address">#{user.email}</p:column>
+                            <p:column headerText="Role">#{user.role}</p:column>
+                            <f:facet name="footer">
+                                <p:commandButton rendered="#{homeManagedBean.selectedUser != null}" value="Reset Password" action="#{homeManagedBean.resetPassword}" update="@form:usersTable, @form:dlgUsers"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
